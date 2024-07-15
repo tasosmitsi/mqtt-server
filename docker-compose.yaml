@@ -1,0 +1,30 @@
+version: "3"
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    restart: always
+    # ports:
+    #   - 1883:1883
+      # - 9001:9001
+      # - 8080:8080
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    user: ${MOSQUITTO_PUID}:${MOSQUITTO_PUID}
+    networks:
+      - mosquitto-net
+  nginx:
+    image: nginx:latest
+    restart: always
+    ports:
+      - 8080:80
+      - 443:443
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs
+      - ./nginx/logs:/etc/nginx/logs
+    networks:
+      - mosquitto-net
+networks:
+  mosquitto-net:
