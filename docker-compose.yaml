@@ -3,9 +3,9 @@ services:
     image: eclipse-mosquitto:latest
     restart: always
     # ports:
-    #   - 1883:1883
-      # - 9001:9001
-      # - 8080:8080
+    # - 1883:1883
+    # - 9001:9001
+    # - 8080:8080
     volumes:
       - ./mosquitto/config:/mosquitto/config
       - ./mosquitto/data:/mosquitto/data
@@ -23,6 +23,20 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d
       - ./nginx/certs:/etc/nginx/certs
       - ./nginx/logs:/etc/nginx/logs
+    networks:
+      - mosquitto-net
+
+  ### Certbot #########################################
+  certbot:
+    build:
+      context: ./certbot
+    volumes:
+      - ./nginx/certs/:/var/certs
+      - ./certbot/letsencrypt/:/var/www/letsencrypt
+    environment:
+      - ENV=production #change to 'production' to generate real certificates. 'staging' will by default dry run the request to prevent hitting rate limits during testing 
+      - CN="xyz" #comma separated values of all the domains you wish to add ssl certificates on
+      - EMAIL="tasos1109@gmail.com"
     networks:
       - mosquitto-net
 networks:
