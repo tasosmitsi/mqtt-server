@@ -25,19 +25,5 @@ services:
       - ./nginx/logs:/etc/nginx/logs
     networks:
       - mosquitto-net
-
-  ### Certbot #########################################
-  certbot:
-    build:
-      context: ./certbot
-    volumes:
-      - ./nginx/certs/:/var/certs
-      - ./certbot/letsencrypt/:/var/www/letsencrypt
-    environment:
-      - ENV=production #change to 'production' to generate real certificates. 'staging' will by default dry run the request to prevent hitting rate limits during testing 
-      - CN="xyz" #comma separated values of all the domains you wish to add ssl certificates on
-      - EMAIL="tasos1109@gmail.com"
-    networks:
-      - mosquitto-net
 networks:
   mosquitto-net:
