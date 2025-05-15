@@ -47,18 +47,18 @@ EOF
 # Create the root Certificate Authority (CA)
 echo "Creating Certificate Authority (CA)..."
 openssl genpkey -algorithm $ALGORITHM -out $CA_KEY
-openssl req -x509 -new -key $CA_KEY -out $CA_CERT -subj "/CN=${DOMAIN}"
+openssl req -x509 -new -key $CA_KEY -out $CA_CERT -subj "/CN=${DOMAIN}" -days 3650
 
 # Generate server private key and certificate using SAN config
 echo "Generating server private key and certificate for ${DOMAIN}..."
 openssl genpkey -algorithm $ALGORITHM -out $SERVER_KEY
 openssl req -new -key $SERVER_KEY -out $SERVER_CSR -subj "/CN=${DOMAIN}"
-openssl x509 -req -in $SERVER_CSR -CA $CA_CERT -CAkey $CA_KEY -CAcreateserial -out $SERVER_CERT -extensions v3_req -extfile $OPENSSL_CONF
+openssl x509 -req -in $SERVER_CSR -CA $CA_CERT -CAkey $CA_KEY -CAcreateserial -out $SERVER_CERT -days 730 -extensions v3_req -extfile $OPENSSL_CONF
 
 # Generate client private key and certificate using SAN config
 echo "Generating client private key and certificate for ${CLIENT_NAME}..."
 openssl genpkey -algorithm $ALGORITHM -out $CLIENT_KEY
 openssl req -new -key $CLIENT_KEY -out $CLIENT_CSR -subj "/CN=${CLIENT_NAME}"
-openssl x509 -req -in $CLIENT_CSR -CA $CA_CERT -CAkey $CA_KEY -CAcreateserial -out $CLIENT_CERT -extensions v3_req -extfile $OPENSSL_CONF
+openssl x509 -req -in $CLIENT_CSR -CA $CA_CERT -CAkey $CA_KEY -CAcreateserial -out $CLIENT_CERT -days 730 -extensions v3_req -extfile $OPENSSL_CONF
 
 echo "4096-bit RSA certificates created successfully!"
